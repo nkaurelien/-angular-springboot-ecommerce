@@ -1,0 +1,27 @@
+# version: '3.8'
+
+services:
+
+  pgadmin:
+    image: pgadmin/pgadmin4
+    ports:
+      - "5000:5000"
+    # volumes:
+    #   - pgadmin_data:/var/lib/pgadmin
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=nkaurelien@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=your_pgadmin_password
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8081:80"
+    # volumes:
+    #   - phpmyadmin_data:/var/www/html
+    environment:
+      - PMA_ARBITRARY_SERVER=1
+      - PMA_HOST=mysql
+      - PMA_USER=nkaurelien
+      - PMA_PASSWORD=your_mysql_password
+    # links:
+    #   - mysql

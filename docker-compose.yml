@@ -1,0 +1,83 @@
+# version: '3.8'
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./frontend:/usr/src/app
+    depends_on:
+      - backend
+  backend-builder:
+    build:
+      dockerfile: builder.Dockerfile
+      context: ./backend
+    volumes:
+      - ./backend/target:/app/target
+      # - SPRING_PROFILE=prod
+
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/app
+    # environment:
+    #   - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/angularspringbootecommerce
+    #   - SPRING_DATASOURCE_USERNAME=nkaurelien
+    #   - SPRING_DATASOURCE_PASSWORD=your_mysql_password
+    #   # - SPRING_PROFILE=prod
+
+  backend-dev:
+    build:
+      dockerfile: dev.Dockerfile
+      context: ./backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend:/app
+    # environment:
+    #   - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/angularspringbootecommerce
+    #   - SPRING_DATASOURCE_USERNAME=nkaurelien
+    #   - SPRING_DATASOURCE_PASSWORD=your_mysql_password
+    #   # - SPRING_PROFILE=prod
+    depends_on:
+      - sqlserver
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:latest
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "your_sa_password"
+      # MSSQL_PID: Express # Evaluation
+      # SQL_SERVER_DATA_DIR: /var/opt/mssql/data
+      # SQL_SERVER_LOG_DIR: /var/opt/mssql/log
+    # volumes:
+    #   - sqlserver_data:/var/opt/mssql/data
+    #   - sqlserver_log:/var/opt/mssql/log
+      
+  # mysql:
+  #   image: mysql:latest
+  #   ports:
+  #     - "3306:3306"
+  #   volumes:
+  #     - ./mysql-data:/var/lib/mysql
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=your_mysql_root_password
+  #     - MYSQL_USER=nkaurelien
+  #     - MYSQL_PASSWORD=your_mysql_password
+  #     - MYSQL_DATABASE=angularspringbootecommerce
+
+  # postgres:
+  #   image: postgres:latest
+  #   ports:
+  #     - "5432:5432"
+  #   # volumes:
+  #   #   - postgres-data:/var/lib/postgresql/data
+  #   environment:
+  #     - POSTGRES_USER=nkaurelien
+  #     - POSTGRES_PASSWORD=your_postgres_password
+  #     - POSTGRES_DB=angularspringbootecommerce
